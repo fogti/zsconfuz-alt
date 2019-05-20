@@ -12,8 +12,8 @@ TMPFILE="$(mktemp)"
 
 while [ $# -gt 1 ]; do
   case "$1" in
-    (--verbose) IS_VERBOSE=true ;;
-    (*)         NINJAOPTS+="$1" ;;
+    (--verbose) IS_VERBOSE=true; NINJAOPTS+=" -v" ;;
+    (*)         NINJAOPTS+=" $1" ;;
   esac
   shift
 done
@@ -25,9 +25,12 @@ if ! [ -f "$1" ]; then
 fi
 
 cleanup() {
-  rm -rf "$TMPFILE" .zscfzFiles
+  rm -rf "$TMPFILE" .zscfzFiles .ninja_*
 }
 
 trap cleanup EXIT
+export PATH="$(dirname "$0")/../libexec/zsconfuz-alt:$PATH"
+$IS_VERBOSE && echo zscfz2ninja.sh "$1"
 zscfz2ninja.sh "$1" < "$1" > "$TMPFILE"
+$IS_VERBOSE && echo ninja -f "$TMPFILE" $NINJAOPTS
 NINJA_STATUS_SLEEP=inf ninja -f "$TMPFILE" $NINJAOPTS

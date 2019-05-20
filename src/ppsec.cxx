@@ -1,4 +1,4 @@
-/** zsconfuz ppsec.cxx
+/** zsconfuz-alt ppsec.cxx
     (C) 2019 Erik Zscheile
     License: ISC
  **/
@@ -8,7 +8,7 @@ using std::string;
 
 int main(int argc, char *argv[]) {
   if(argc == 1) {
-    fprintf(stderr, "USAGE: zsconfuz-ppsec SECTION_NAME\n");
+    fprintf(stderr, "USAGE: zscfz-ppsec SECTION_NAME\n");
     return 1;
   }
   puts("");

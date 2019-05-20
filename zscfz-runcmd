@@ -5,4 +5,4 @@
 # License: ISC
 
 resfile="$1"; shift
-exec "$@" | zsconfuz-ecatch "$resfile"
+exec "$@" | zscfz-ecatch "$resfile"

@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# project: zsconfuz-alt
 # a script which converts a subset of zsconfuz into a ninja file
 # USAGE: zscfz2ninja.sh < ZSconfuz.txt > zscfz.ninja
 # (C) 2019 Erik Zscheile
@@ -21,11 +22,11 @@ rule runrawcmd
   description = \$DESC
 
 rule runcmd
-  command = zsconfuz-runcmd \$results_file \$COMMAND && touch \$out
+  command = zscfz-runcmd \$results_file \$COMMAND && touch \$out
   description = \$COMMAND
 
 rule section
-  command = zsconfuz-ppsec \$NAME && touch \$out
+  command = zscfz-ppsec \$NAME && touch \$out
   description = : \$NAME
 
 build \$tmpdir/L0 \$results_file: runrawcmd

@@ -1,8 +1,8 @@
-/** zsconfuz ecatch.c
+/** zsconfuz-alt ecatch.c
     (C) 2019 Erik Zscheile
     License: ISC
 
- * USAGE: CMD ARGS... | zsconfuz-ecatch [ZSCFZ_OUT]
+ * USAGE: CMD ARGS... | zscfz-ecatch [ZSCFZ_OUT]
  * filters all zsconfuz control codes like zsconfuz-filter,
  * but updates shell results file
  **/
