@@ -1,17 +1,17 @@
 #!/bin/bash
 
-# USAGE: zsconfuz-alt [--verbose] [-jN] ZSconfuz-file.txt
 # This program has almost the same interface as zsconfuz
 #   (it only lacks the capability to dynamically add commands to the command queue)
 #   and simulates it using ninja
 # (C) 2019 Erik Zscheile
 # License: ISC
 
-IS_VERBOSE=false
+IS_VERBOSE=false IS_RESUME=false
 TMPFILE="$(mktemp)"
 
 while [ $# -gt 1 ]; do
   case "$1" in
+    (--resume)  IS_RESUME=true ;;
     (--verbose) IS_VERBOSE=true; NINJAOPTS+=" -v" ;;
     (*)         NINJAOPTS+=" $1" ;;
   esac
@@ -19,18 +19,24 @@ while [ $# -gt 1 ]; do
 done
 
 if ! [ -f "$1" ]; then
-  echo "USAGE: zsconfuz-alt [--verbose] [-jN] [NINJAOPTS] ZSconfuz-file.txt"
-  echo "NOTE: this program lacks the capability to dynamically add commands to the command queue"
+cat <<EOF
+USAGE: zsconfuz-alt [--verbose] [-jN] [--resume] [NINJAOPTS] ZSconfuz-file.txt
+NOTE: this program lacks the capability to dynamically add commands to the command queue
+Options:
+  -jN         use N workers
+  --verbose   print executed commands
+  --resume    (specific to zsconfuz-alt) keep temporary files
+EOF
   exit 1
 fi
 
 cleanup() {
-  rm -rf "$TMPFILE" .zscfzFiles .ninja_*
+  "$IS_RESUME" || rm -rf "$TMPFILE" .zscfzFiles .ninja_*
 }
 
 trap cleanup EXIT
 export PATH="$(dirname "$0")/../libexec/zsconfuz-alt:$PATH"
-$IS_VERBOSE && echo zscfz2ninja.sh "$1"
+"$IS_VERBOSE" && echo zscfz2ninja.sh "$1"
 zscfz2ninja.sh "$1" < "$1" > "$TMPFILE"
-$IS_VERBOSE && echo ninja -f "$TMPFILE" $NINJAOPTS
+"$IS_VERBOSE" && echo ninja -f "$TMPFILE" $NINJAOPTS
 NINJA_STATUS_SLEEP=inf ninja -f "$TMPFILE" $NINJAOPTS
