@@ -10,6 +10,8 @@ tests/compiler_info C CC
 tests/compiler_info C++ CXX
 
 : "checking libraries"
-tests/chk_lib LIBS_dl HAVE_LIBDL dl
-tests/chk_lib LIBS_m HAVE_LIBM m
-tests/chk_lib LIBS_lowlevelzs HAVE_LOWLEVELZS owlevelzs
+tests/chk_lib LIBS_dl dl
+tests/chk_lib LIBS_m m
+tests/chk_lib LIBS_lowlevelzs owlevelzs
+tests/chk_lib LIBS_zsneta zsneta
+tests/chk_lib LIBS_lulz lulz
