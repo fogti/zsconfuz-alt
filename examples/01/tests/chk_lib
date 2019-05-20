@@ -18,8 +18,8 @@ shift
 
 LIBx2="LIBS_$1"
 
-mkdir -p .temp
-echo_n "int main(int argc, char **argv) { return 0; }" > ".temp/chklib_$$.c"
+mkdir -p .zscfzFiles
+echo_n "int main(int argc, char **argv) { return 0; }" > ".zscfzFiles/chklib_$$.c"
 
 for lib in "${!LIBx2}" "$@"; do
   [ -z "$lib" ] && continue
@@ -27,7 +27,7 @@ for lib in "${!LIBx2}" "$@"; do
   libsx="$lib"
   echo "$lib" | grep -Fq - - || libsx="-l$lib"
   libsx="$(echo "$libsx" | sed -e 's/;/ /g')"
-  if "$CC" $libsx -o ".temp/chklib_$$.x" ".temp/chklib_$$.c" &>/dev/null; then
+  if "$CC" $libsx -o ".zscfzFiles/chklib_$$.x" ".zscfzFiles/chklib_$$.c" &>/dev/null; then
     echo yes
     lib_found=true
     break
@@ -35,5 +35,5 @@ for lib in "${!LIBx2}" "$@"; do
   echo no
 done
 
-rm -f ".temp/chklib_$$."*
+rm -f ".zscfzFiles/chklib_$$."*
 $lib_found && printf "\000$var_name=$libsx\n"
