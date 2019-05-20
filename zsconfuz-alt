@@ -1,0 +1,33 @@
+#!/bin/bash
+
+# USAGE: zsconfuz-alt [--verbose] [-jN] ZSconfuz-file.txt
+# This program has almost the same interface as zsconfuz
+#   (it only lacks the capability to dynamically add commands to the command queue)
+#   and simulates it using ninja
+# (C) 2019 Erik Zscheile
+# License: ISC
+
+IS_VERBOSE=false
+TMPFILE="$(mktemp)"
+
+while [ $# -gt 1 ]; do
+  case "$1" in
+    (--verbose) IS_VERBOSE=true ;;
+    (*)         NINJAOPTS+="$1" ;;
+  esac
+  shift
+done
+
+if ! [ -f "$1" ]; then
+  echo "USAGE: zsconfuz-alt [--verbose] [-jN] [NINJAOPTS] ZSconfuz-file.txt"
+  echo "NOTE: this program lacks the capability to dynamically add commands to the command queue"
+  exit 1
+fi
+
+cleanup() {
+  rm -rf "$TMPFILE" .zscfzFiles
+}
+
+trap cleanup EXIT
+zscfz2ninja.sh "$1" < "$1" > "$TMPFILE"
+NINJA_STATUS_SLEEP=inf ninja -f "$TMPFILE" $NINJAOPTS

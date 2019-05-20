@@ -1,0 +1,15 @@
+output tent.sh
+
+: "checking toolkit"
+tests/find_prog CC cc_prog_found gcc clang cc
+tests/find_prog CXX cxx_prog_found g++ clang++ c++ gpp aCC CC cxx cc++
+tests/readlink
+
+: "toolkit information"
+tests/compiler_info C CC
+tests/compiler_info C++ CXX
+
+: "checking libraries"
+tests/chk_lib LIBS_dl HAVE_LIBDL dl
+tests/chk_lib LIBS_m HAVE_LIBM m
+tests/chk_lib LIBS_lowlevelzs HAVE_LOWLEVELZS owlevelzs
