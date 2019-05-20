@@ -40,10 +40,10 @@ CNT_BEFSEC=0
 CNT_AFTSEC=1
 
 print_steplist() {
-  for i in $(seq $CNT_BEFSEC $(expr $CNT_AFTSEC - 1)); do
-    [ "x$i" = "x$1" ] && continue
-    echo -n " \$tmpdir/L$i"
-  done
+  set -- $(seq $CNT_BEFSEC $(expr $CNT_AFTSEC - 1))
+  # if there are commands in the section, we don't need to reference the section itself
+  [ $# -gt 1 ] && shift
+  for i; do echo -n " \$tmpdir/L$i"; done
 }
 
 # print_command sec|cmd ARGS...
