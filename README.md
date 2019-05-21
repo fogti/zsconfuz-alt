@@ -12,3 +12,8 @@ NOTE: this utility only generates
  - CMake
  - Ninja
  - bash
+
+## TODO
+
+ - add support for dynamic command push
+ - merge zscfz-runcmd and zscfz-ecatch into one executable
