@@ -14,9 +14,9 @@ include_directories("${PROJECT_SOURCE_DIR}" "${PROJECT_BINARY_DIR}")
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fno-plt -fno-exceptions -fno-unwind-tables -fno-asynchronous-unwind-tables")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-rtti -fno-plt -fno-exceptions -fno-unwind-tables -fno-asynchronous-unwind-tables")
 
-add_executable(zscfz-ecatch src/ecatch.c)
 add_executable(zscfz-ppsec src/ppsec.cxx)
+add_executable(zscfz-runcmd src/runcmd.c)
 
-install(TARGETS zscfz-ecatch zscfz-ppsec DESTINATION "${INSTALL_LIBEXEC_DIR}")
-install(PROGRAMS zscfz2ninja.sh zscfz-runcmd DESTINATION "${INSTALL_LIBEXEC_DIR}")
+install(TARGETS zscfz-ppsec zscfz-runcmd DESTINATION "${INSTALL_LIBEXEC_DIR}")
+install(PROGRAMS zscfz2ninja.sh DESTINATION "${INSTALL_LIBEXEC_DIR}")
 install(PROGRAMS zsconfuz-alt DESTINATION "${INSTALL_BIN_DIR}")

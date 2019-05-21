@@ -16,4 +16,3 @@ NOTE: this utility only generates
 ## TODO
 
  - add support for dynamic command push
- - merge zscfz-runcmd and zscfz-ecatch into one executable

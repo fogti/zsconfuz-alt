@@ -22,7 +22,7 @@ rule runrawcmd
   description = \$DESC
 
 rule runcmd
-  command = zscfz-runcmd \$results_file \$COMMAND && touch \$out
+  command = zscfz-runcmd \$COMMAND 5>>\$results_file && touch \$out
   description = \$COMMAND
 
 rule section
