@@ -7,7 +7,6 @@
 # License: ISC
 
 IS_VERBOSE=false IS_RESUME=false
-TMPFILE="$(mktemp)"
 
 while [ $# -gt 1 ]; do
   case "$1" in
@@ -31,12 +30,24 @@ EOF
 fi
 
 cleanup() {
-  "$IS_RESUME" || rm -rf "$TMPFILE" .zscfzFiles .ninja_*
+  "$IS_RESUME" || rm -rf .zscfzFiles .ninja_*
 }
 
 trap cleanup EXIT
 export PATH="$(dirname "$0")/../libexec/zsconfuz-alt:$PATH"
-"$IS_VERBOSE" && echo zscfz2ninja.sh "$1"
-zscfz2ninja.sh "$1" < "$1" > "$TMPFILE"
-"$IS_VERBOSE" && echo ninja -f "$TMPFILE" $NINJAOPTS
-NINJA_STATUS_SLEEP=inf ninja -f "$TMPFILE" $NINJAOPTS
+mkdir -p .zscfzFiles
+set -e
+cp -f "$1" .zscfzFiles/zscfz.txt
+"$IS_VERBOSE" && echo zscfz2ninja.sh .zscfzFiles/zscfz.txt || true
+zscfz2ninja.sh .zscfzFiles/zscfz.txt < .zscfzFiles/zscfz.txt > .zscfzFiles/ninja.build
+while true; do
+  rm -f .zscfzFiles/zscfz2.txt && touch .zscfzFiles/zscfz2.txt || true
+  "$IS_VERBOSE" && echo ninja -f .zscfzFiles/ninja.build $NINJAOPTS || true
+  NINJA_STATUS_SLEEP=inf ninja -f .zscfzFiles/ninja.build $NINJAOPTS
+  [ -s .zscfzFiles/zscfz2.txt ] || break
+  (
+    echo
+    echo ": \"\""
+    cat .zscfzFiles/zscfz2.txt
+  ) >> .zscfzFiles/zscfz.txt
+done

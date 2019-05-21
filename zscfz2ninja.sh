@@ -16,18 +16,26 @@ cat <<EOF
 
 results_file = ${OUTPUT_DEF}
 tmpdir = ./.zscfzFiles
+dynqueue_file = \$tmpdir/zscfz2.txt
+
+rule regenerate
+  command = zscfz2ninja.sh \$in < \$in > \$out
+  description = regenerate \$out from \$in
+  generator = 1
 
 rule runrawcmd
   command = \$COMMAND && touch \$out
   description = \$DESC
 
 rule runcmd
-  command = zscfz-runcmd \$COMMAND 5>>\$results_file && touch \$out
+  command = zscfz-runcmd \$COMMAND 5>>\$results_file 6>>\$dynqueue_file && touch \$out
   description = \$COMMAND
 
 rule section
   command = zscfz-ppsec \$NAME && touch \$out
   description = : \$NAME
+
+build \$tmpdir/ninja.build: regenerate $1
 
 build \$tmpdir/L0 \$results_file: runrawcmd
   COMMAND = rm -f \$results_file && touch \$results_file

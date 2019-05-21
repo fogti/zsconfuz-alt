@@ -10,6 +10,11 @@
 #include <unistd.h>
 #include <stdbool.h>
 #include <stdio.h>
+#include <string.h>
+
+static void zs_write_str(const int fd, const char * s) {
+  write(fd, s, strlen(s));
+}
 
 static void zs_write_range(const int fd, const char * begin, const char * end) {
   if(end <= begin) return;
@@ -18,7 +23,7 @@ static void zs_write_range(const int fd, const char * begin, const char * end) {
 
 int main(int argc, char *argv[]) {
   // vars
-  bool got_nl = true;
+  bool got_nl = true, is_section_push = false;
   int redirect2fd = 1;
   char buf[1024] = {0};
   int pfds[2];
@@ -65,7 +70,13 @@ int main(int argc, char *argv[]) {
     const char *mark = buf, *eobuf = buf + rdr;
     for(const char * pos = buf; pos < eobuf; ++pos) {
       if(*pos == '\n') {
-        zs_write_range(redirect2fd, mark, pos + 1);
+        if(is_section_push) {
+          zs_write_range(redirect2fd, mark, pos);
+          zs_write_str(6, "\"\n");
+          is_section_push = false;
+        } else {
+          zs_write_range(redirect2fd, mark, pos + 1);
+        }
         mark = pos + 1;
         got_nl = true;
         redirect2fd = 1;
@@ -82,6 +93,10 @@ int main(int argc, char *argv[]) {
           case '\0':   // redirect output to shell results file
             redirect2fd = 5; break;
           case '\001': // runtime command push
+            redirect2fd = 6; break;
+          case '\002': // runtime section push
+            zs_write_str(6, ": \"");
+            is_section_push = true;
             redirect2fd = 6; break;
         }
         if(redirect2fd != 1) mark = pos + 1;
