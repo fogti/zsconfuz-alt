@@ -30,7 +30,7 @@ EOF
 fi
 
 cleanup() {
-  "$IS_RESUME" || rm -rf .zscfzFiles .ninja_*
+  "$IS_RESUME" || rm -rf "$(readlink .zscfzFiles)" .zscfzFiles .ninja_*
 }
 
 prnx() {
@@ -40,7 +40,15 @@ prnx() {
 
 trap cleanup EXIT
 export PATH="$(dirname "$0")/../libexec/zsconfuz-alt:$PATH" NINJA_STATUS_SLEEP=inf
-mkdir -p .zscfzFiles
+if ! "$IS_RESUME"; then
+  TMPD="$(mktemp -d)"
+  [ $? -eq 0 ] || exit 1
+  rm -rf .zscfzFiles && ln -sT "$TMPD" .zscfzFiles || { rm -rf "$TMPD"; exit 1; }
+  unset TMPD
+else
+  mkdir -p .zscfzFiles
+fi
+
 set -e
 cp -f "$1" .zscfzFiles/zscfz.txt
 "$IS_VERBOSE" && echo zscfz2ninja.sh || true
