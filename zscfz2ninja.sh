@@ -38,8 +38,8 @@ rule section
 build \$tmpdir/ninja.build: regenerate $1
 
 build \$tmpdir/L0 \$results_file: runrawcmd
-  COMMAND = rm -f \$results_file && touch \$results_file
-  DESC = prepare \$results_file
+  COMMAND = rm -f \$results_file
+  DESC = setup result files
 
 EOF
 }
