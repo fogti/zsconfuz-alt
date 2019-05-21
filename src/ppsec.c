@@ -1,10 +1,10 @@
-/** zsconfuz-alt ppsec.cxx
+/** zsconfuz-alt ppsec.c
     (C) 2019 Erik Zscheile
     License: ISC
  **/
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
-#include <string>
 
 int main(int argc, char *argv[]) {
   if(argc == 1) {
@@ -13,7 +13,10 @@ int main(int argc, char *argv[]) {
   }
   const size_t sec_len = strlen(argv[1]);
   if(!sec_len) return 0;
-  const std::string sepad(sec_len + 6, '-');
-  printf("\n%s\n   \033[1m%s\033[0m\n%s\n", sepad.c_str(), argv[1], sepad.c_str());
+  const size_t pad_len = sec_len + 6;
+  char sepad[pad_len + 1];
+  memset(sepad, '-', pad_len);
+  sepad[pad_len] = 0;
+  printf("\n%s\n   \033[1m%s\033[0m\n%s\n", sepad, argv[1], sepad);
   return 0;
 }
