@@ -12,3 +12,5 @@ NOTE: this utility only generates
  - CMake
  - Ninja
  - bash
+ - [zsconfuz-common](https://github.com/zserik/zsconfuz-common)
+

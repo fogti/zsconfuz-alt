@@ -1,6 +1,0 @@
-.ninja_*
-.zscfzFiles/
-zsconfuz_*.sh
-/examples/*.ninja
-/examples/01/ac_import
-/examples/01/tent.sh

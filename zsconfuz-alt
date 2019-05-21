@@ -51,17 +51,17 @@ fi
 
 set -e
 cp -f "$1" .zscfzFiles/zscfz.txt
-"$IS_VERBOSE" && echo zscfz2ninja.sh || true
-zscfz2ninja.sh < .zscfzFiles/zscfz.txt > .zscfzFiles/ninja.build
+"$IS_VERBOSE" && echo zscfz2ninja || true
+zscfz2ninja < .zscfzFiles/zscfz.txt > .zscfzFiles/build.ninja
 while true; do
   rm -f .zscfzFiles/zscfz2.txt && touch .zscfzFiles/zscfz2.txt || true
-  prnx ninja -f .zscfzFiles/ninja.build $NINJAOPTS
+  prnx ninja -C .zscfzFiles $NINJAOPTS
   [ -s .zscfzFiles/zscfz2.txt ] || break
   (
     echo
     echo ": \"\""
     cat .zscfzFiles/zscfz2.txt
   ) >> .zscfzFiles/zscfz.txt
-  "$IS_VERBOSE" && echo zscfz2ninja.sh || true
-  zscfz2ninja.sh < .zscfzFiles/zscfz.txt > .zscfzFiles/ninja.build
+  "$IS_VERBOSE" && echo zscfz2ninja || true
+  zscfz2ninja < .zscfzFiles/zscfz.txt > .zscfzFiles/build.ninja
 done
