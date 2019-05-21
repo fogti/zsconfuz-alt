@@ -43,8 +43,8 @@ export PATH="$(dirname "$0")/../libexec/zsconfuz-alt:$PATH" NINJA_STATUS_SLEEP=i
 mkdir -p .zscfzFiles
 set -e
 cp -f "$1" .zscfzFiles/zscfz.txt
-"$IS_VERBOSE" && echo zscfz2ninja.sh .zscfzFiles/zscfz.txt || true
-zscfz2ninja.sh .zscfzFiles/zscfz.txt < .zscfzFiles/zscfz.txt > .zscfzFiles/ninja.build
+"$IS_VERBOSE" && echo zscfz2ninja.sh || true
+zscfz2ninja.sh < .zscfzFiles/zscfz.txt > .zscfzFiles/ninja.build
 while true; do
   rm -f .zscfzFiles/zscfz2.txt && touch .zscfzFiles/zscfz2.txt || true
   prnx ninja -f .zscfzFiles/ninja.build $NINJAOPTS
@@ -54,6 +54,6 @@ while true; do
     echo ": \"\""
     cat .zscfzFiles/zscfz2.txt
   ) >> .zscfzFiles/zscfz.txt
-  "$IS_VERBOSE" && echo zscfz2ninja.sh .zscfzFiles/zscfz.txt || true
-  zscfz2ninja.sh .zscfzFiles/zscfz.txt < .zscfzFiles/zscfz.txt > .zscfzFiles/ninja.build
+  "$IS_VERBOSE" && echo zscfz2ninja.sh || true
+  zscfz2ninja.sh < .zscfzFiles/zscfz.txt > .zscfzFiles/ninja.build
 done
