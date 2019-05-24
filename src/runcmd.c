@@ -5,10 +5,10 @@
 
 #include <sys/types.h>
 #include <sys/wait.h>
-#include <unistd.h>
+#include <unistd.h>    /* chdir, write */
 #include <stdbool.h>
-#include <stdio.h>
-#include <string.h>
+#include <stdio.h>     /* fprintf, perror */
+#include <string.h>    /* strlen */
 
 static void zs_write_str(const int fd, const char * s) {
   write(fd, s, strlen(s));
@@ -21,7 +21,7 @@ static void zs_write_range(const int fd, const char * begin, const char * end) {
 
 int main(int argc, char *argv[]) {
   // vars
-  bool got_nl = true, is_section_push = false;
+  bool got_nl = true;
   int redirect2fd = 1;
   char buf[1024] = {0};
   int pfds[2];
@@ -57,7 +57,7 @@ int main(int argc, char *argv[]) {
         execvp(argv[1], argv + 1);
         perror("zscfz-runcmd:execvp()");
       }
-      return 127;
+      _exit(127);
   }
   close(pfds[1]);
 
@@ -68,13 +68,9 @@ int main(int argc, char *argv[]) {
     const char *mark = buf, *eobuf = buf + rdr;
     for(const char * pos = buf; pos < eobuf; ++pos) {
       if(*pos == '\n') {
-        if(is_section_push) {
-          zs_write_range(redirect2fd, mark, pos);
-          zs_write_str(6, "\"\n");
-          is_section_push = false;
-        } else {
-          zs_write_range(redirect2fd, mark, pos + 1);
-        }
+        zs_write_range(redirect2fd, mark, pos);
+        if(redirect2fd == 6) zs_write_str(6, "\"");
+        zs_write_str(redirect2fd, "\n");
         mark = pos + 1;
         got_nl = true;
         redirect2fd = 1;
@@ -85,16 +81,34 @@ int main(int argc, char *argv[]) {
             zs_write_range(redirect2fd, mark, pos);
             mark = pos + 1;
         }
+        if(redirect2fd == 6) {
+          switch(*pos) {
+            case '\0':
+              // argument separator
+              zs_write_range(redirect2fd, mark, pos);
+              zs_write_str(6, "\" \"");
+              mark = pos + 1;
+              break;
+
+            case '\\':
+            case '\"':
+              // some char needing escape seqs
+              zs_write_range(redirect2fd, mark, pos);
+              zs_write_str(6, "\\");
+              mark = pos;
+              break;
+          }
+        }
       } else {
         got_nl = false;
         switch(*pos) {
           case '\0':   // redirect output to shell results file
             redirect2fd = 5; break;
-          case '\001': // runtime command push
-            redirect2fd = 6; break;
-          case '\002': // runtime section push
+          case '\001': // runtime section push
             zs_write_str(6, ": \"");
-            is_section_push = true;
+            redirect2fd = 6; break;
+          case '\002': // runtime command push
+            zs_write_str(6, "\"");
             redirect2fd = 6; break;
         }
         if(redirect2fd != 1) mark = pos + 1;
@@ -104,5 +118,5 @@ int main(int argc, char *argv[]) {
   }
 
   while(-1 == wait(&ret)) ;
-  return ret;
+  return (WIFEXITED(ret)) ? (WEXITSTATUS(ret)) : ret;
 }
