@@ -14,3 +14,6 @@ NOTE: this utility only generates
  - bash
  - [zsconfuz-common](https://github.com/zserik/zsconfuz-common)
 
+## TODO
+
+ - port zscfz-runcmd (src/runcmd.c) to other platforms (Windows, BSD, ...)
