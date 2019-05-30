@@ -96,6 +96,7 @@ int main(int argc, char *argv[]) {
     "rule section\n"
     "  command = zscfz-ppsec $NAME && touch $out\n"
     "  description = : $NAME\n"
+    "  pool = console\n"
     "\n"
     "build build.ninja: regenerate zscfz.txt\n"
     "build L0 $results_file: mkempty\n"
